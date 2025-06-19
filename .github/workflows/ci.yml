@@ -1,0 +1,36 @@
+name: CD Pipeline
+
+# act -W '.github/workflows/ci.yml'
+on:
+  push:
+    branches:
+      - main
+env:
+  IMAGE_NAME: goapp
+  REGISTRY: localhost:7001
+  GO_VERSION: 1.22
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go Environment
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Download Go Modules
+        run: go mod download
+
+      - name: Build Go Application
+        # Adjust './...' to your main package path if it's not at the root.
+        run: go build -v ./...
+
+      - name: Run Go Tests
+        # Adjust './...' to your test package path if needed.
+        run: go test -v ./...
