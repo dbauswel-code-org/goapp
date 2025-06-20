@@ -9,4 +9,4 @@ runcd:
 
 .PHONY: release
 release:
-	goreleaser release --rm-dist
+	goreleaser release --skip=publish
