@@ -13,5 +13,6 @@
     "before:init": "go test -v ./...",
     "after:bump": "echo Releasing version ${version}",
     "after:release": "echo Released ${version}!"
-  }
+  },
+	"only-version": true
 }
