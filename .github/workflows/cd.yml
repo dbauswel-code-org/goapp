@@ -31,12 +31,12 @@ jobs:
 
       - name: Run Tests and Generate Coverage Report
         run: go test -v ./... -coverprofile=coverage.out
-      
+
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v2
+        uses: SonarSource/sonarcloud-github-action@v2
         env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
 
   docker-publish:
     needs: build-and-test
