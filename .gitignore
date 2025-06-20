@@ -1,2 +1,4 @@
 .envrc
 coverage.out
+# Added by goreleaser init:
+dist/

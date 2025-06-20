@@ -1,0 +1,66 @@
+name: Release Pipeline
+
+on:
+  release:
+    types: [published]
+
+env:
+  APP_NAME: goapp
+  GO_VERSION: 1.24
+  IMAGE_REGISTRY: ghcr.io/username-code-org
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go Environment
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Install Dependencies
+        run: go mod tidy
+
+      - name: Build Application
+        run: go build -v ./...
+
+      - name: Run Tests
+        run: go test -v ./...
+
+  docker-publish:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.IMAGE_REGISTRY }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE_REGISTRY }}/${{ env.APP_NAME }}:${{ github.event.release.tag_name}}
+            ${{ env.IMAGE_REGISTRY }}/${{ env.APP_NAME }}:latest
+
+  # TODO: This just needs to call a global update manifest job not do it it's self (will test locally)
+
+# https://github.com/orgs/dbauswel-code-org/packages - org
+# https://github.com/users/dbauswel-code/packages/container/package/goapp - personal
+# https://sonarcloud.io/summary/overall?id=dbauswel-code-org_goapp&branch=main - sonar

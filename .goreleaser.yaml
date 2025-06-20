@@ -1,0 +1,14 @@
+project_name: goapp
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+  use: git
+
+release:
+  github:
+    owner: dbauswel-code-org
+    name: goapp
