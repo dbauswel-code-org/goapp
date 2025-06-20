@@ -1,4 +1,4 @@
-name: CD Pipeline
+name: CI Pipeline
 
 # act -W '.github/workflows/ci.yml'
 on:
@@ -8,7 +8,7 @@ on:
 env:
   IMAGE_NAME: goapp
   REGISTRY: localhost:7001
-  GO_VERSION: 1.22
+  GO_VERSION: 1.24
 
 jobs:
   build-and-test:

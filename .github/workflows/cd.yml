@@ -5,9 +5,9 @@ on:
     branches:
       - main
 env:
-  IMAGE_NAME: test-app
-  REGISTRY: localhost:7001
-  GO_VERSION: 1.22
+  IMAGE_NAME: goapp
+  IMAGE_REGISTRY: ghcr.io/dbauswel-code
+  GO_VERSION: 1.24
 
 jobs:
   build-and-test:
@@ -27,11 +27,9 @@ jobs:
         run: go mod download
 
       - name: Build Go Application
-        # Adjust './...' to your main package path if it's not at the root.
         run: go build -v ./...
 
       - name: Run Go Tests
-        # Adjust './...' to your test package path if needed.
         run: go test -v ./...
 
   docker-publish:
@@ -45,6 +43,7 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
+          registry: ${{ env.IMAGE_REGISTRY }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
@@ -54,59 +53,10 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: . # The build context (usually the root of your repository where your Dockerfile is)
-          push: true # Set to true to push the image to the registry
+          context: .
+          push: true
           tags: |
-            # Tag the image with the full Git SHA (unique identifier for this commit)
             ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            # Optionally, tag the image with 'latest' (use with caution in production environments as it's mutable)
             ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          # build-args: | # Uncomment and add if your Dockerfile requires build arguments
-          #   GOARCH=amd64 # Example: passing architecture to Dockerfile for cross-compilation
-          # secrets: | # Uncomment and add if your Docker build needs external secrets (e.g., for private repo cloning)
-          #   "SECRET_KEY=${{ secrets.DOCKER_BUILD_SECRET }}"
 
   # TODO: This just needs to call a global update manifest job not do it it's self (will test locally)
-  # Job 3: Update Manifest using Kustomize
-  update-manifest:
-    needs: docker-publish # This job depends on the Docker image being successfully published
-    runs-on: ubuntu-latest
-    # This job typically requires push access to a separate repository where your manifests are stored.
-    # Ensure you have a 'MANIFEST_REPO_PAT' secret with appropriate permissions.
-    # Alternatively, if manifests are in the same repo, you might only need the default GITHUB_TOKEN if permissions are sufficient.
-
-    steps:
-      - name: Checkout Manifest Repository
-        # If your deployment manifests are in a different repository, checkout that repository here.
-        # Replace 'your-org/your-manifest-repo' with the correct repository.
-        # Ensure MANIFEST_REPO_PAT secret is configured with write access to the manifest repo.
-        uses: actions/checkout@v4
-        with:
-          repository: your-org/your-manifest-repo # << IMPORTANT: Replace with your Kustomize manifest repo
-          ref: main # The branch where your Kustomize manifests live
-          token: ${{ secrets.MANIFEST_REPO_PAT }} # Personal Access Token with repo write access
-          path: ./manifests # Checkout into a subdirectory named 'manifests'
-
-      - name: Setup Kustomize
-        # Installs Kustomize CLI on the runner
-        uses: fluxcd/setup-kustomize@v3 # Use a reliable Kustomize setup action
-        with:
-          kustomize-version: "5.x" # Specify the Kustomize version you want to use
-
-      - name: Update Image Tag in Kustomization
-        # Use 'kustomize edit set image' to update the image tag in your kustomization.yaml
-        # The syntax is 'image_name:new_image_tag'
-        # Example: your-go-app-name:docker.io/your-dockerhub-username/your-go-app-name:GITHUB_SHA
-        run: |
-          cd ./manifests/${{ env.KUSTOMIZE_MANIFESTS_PATH }}
-          kustomize edit set image ${{ env.DOCKER_IMAGE_NAME }}=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
-
-      - name: Commit and Push Manifest Changes
-        # Commit the updated kustomization.yaml and push it back to the manifest repository
-        run: |
-          cd ./manifests
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add .
-          git commit -m "Kustomize: Update ${{ env.DOCKER_IMAGE_NAME }} image to ${{ github.sha }}" || echo "No changes to commit"
-          git push
