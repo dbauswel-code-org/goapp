@@ -17,5 +17,5 @@ func TestRootHandler(t *testing.T) {
 	e.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.Equal(t, "Hello World!", rec.Body.String())
+	assert.Equal(t, "Hello World", rec.Body.String())
 }
