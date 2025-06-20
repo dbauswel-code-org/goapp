@@ -7,7 +7,7 @@ on:
 env:
   APP_NAME: goapp
   GO_VERSION: 1.24
-  IMAGE_REGISTRY: ghcr.io/dbauswel-code
+  IMAGE_REGISTRY: ghcr.io/dbauswel-code-org
 
 jobs:
   build-and-test:
