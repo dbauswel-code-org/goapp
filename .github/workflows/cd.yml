@@ -67,8 +67,3 @@ jobs:
           tags: |
             ${{ env.IMAGE_REGISTRY }}/${{ env.APP_NAME }}:${{ github.sha }}
             ${{ env.IMAGE_REGISTRY }}/${{ env.APP_NAME }}:latest
-
-  # TODO: This just needs to call a global update manifest job not do it it's self (will test locally)
-# https://github.com/orgs/dbauswel-code-org/packages - org
-# https://github.com/users/dbauswel-code/packages/container/package/goapp - personal
-# https://sonarcloud.io/summary/overall?id=dbauswel-code-org_goapp&branch=main - sonar
