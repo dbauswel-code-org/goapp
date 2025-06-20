@@ -9,4 +9,4 @@ runcd:
 
 .PHONY: release
 release:
-	goreleaser release
+	release-it
