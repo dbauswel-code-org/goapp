@@ -1,0 +1,17 @@
+{
+  "git": {
+    "requireCleanWorkingDir": true,
+    "tagName": "v${version}",
+    "commitMessage": "chore(release): v${version}",
+    "push": true
+  },
+  "github": {
+    "release": true,
+    "tokenRef": "GITHUB_TOKEN"
+  },
+  "hooks": {
+    "before:init": "go test ./...",
+    "after:bump": "echo Releasing version ${version}",
+    "after:release": "echo Released ${version}!"
+  }
+}
