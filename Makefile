@@ -9,4 +9,4 @@ runcd:
 
 .PHONY: release
 release:
-	release-it --no-increment
+	release-it
