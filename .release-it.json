@@ -9,6 +9,7 @@
     "release": true,
     "tokenRef": "GITHUB_TOKEN"
   },
+	"ci": true,
   "hooks": {
     "before:init": "go test -v ./...",
     "after:bump": "echo Releasing version ${version}",
