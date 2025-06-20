@@ -1,7 +1,7 @@
 # --- Run Target ---
 .PHONY: runci
 runci: 
-	act --container-architecture linux/amd64 --quiet -s SONAR_TOKEN -W '.github/workflows/ci.yml'
+	act --container-architecture linux/amd64 -s SONAR_TOKEN -W '.github/workflows/ci.yml'
 
 .PHONY: runcd
 runcd: 

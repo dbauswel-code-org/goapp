@@ -10,7 +10,7 @@ on:
 env:
   APP_NAME: goapp
   GO_VERSION: 1.24
-  SONAR_HOST_URL: https://sonarcloud.io
+  SONAR_HOST_URL: https://api.sonarcloud.io
 
 jobs:
   build-and-test:
@@ -33,10 +33,9 @@ jobs:
 
       - name: Run Tests and Generate Coverage Report
         run: go test -v ./... -coverprofile=coverage.out
-      
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v2
-        env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
 
+      - name: SonarQube Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
