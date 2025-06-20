@@ -10,7 +10,7 @@
     "tokenRef": "GITHUB_TOKEN"
   },
   "hooks": {
-    "before:init": "go test ./...",
+    "before:init": "go test -v ./...",
     "after:bump": "echo Releasing version ${version}",
     "after:release": "echo Released ${version}!"
   }
