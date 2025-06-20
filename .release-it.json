@@ -11,8 +11,8 @@
   },
   "hooks": {
     "before:init": "go test -v ./...",
-    "after:bump": "echo Releasing version ${version}",
-    "after:release": "echo Released ${version}!"
+    "after:bump": "Releasing version ${version}",
+    "after:release": "Released ${version}!"
   },
 	"only-version": true
 }
