@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "dbauswel-code",
+        "projectKey": "dbauswel-code_goapp"
+    }
+}

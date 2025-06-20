@@ -5,9 +5,9 @@ on:
     branches:
       - main
 env:
-  IMAGE_NAME: goapp
-  IMAGE_REGISTRY: ghcr.io/dbauswel-code
+  APP_NAME: goapp
   GO_VERSION: 1.24
+  IMAGE_REGISTRY: ghcr.io/dbauswel-code
 
 jobs:
   build-and-test:
@@ -23,14 +23,20 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - name: Download Go Modules
-        run: go mod download
+      - name: Install Dependencies
+        run: go mod tidy
 
-      - name: Build Go Application
+      - name: Build Application
         run: go build -v ./...
 
-      - name: Run Go Tests
-        run: go test -v ./...
+      - name: Run Tests and Generate Coverage Report
+        run: go test -v ./... -coverprofile=coverage.out
+      
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v2
+        env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
 
   docker-publish:
     needs: build-and-test
@@ -56,7 +62,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_REGISTRY }}/${{ env.APP_NAME }}:${{ github.sha }}
+            ${{ env.IMAGE_REGISTRY }}/${{ env.APP_NAME }}:latest
 
   # TODO: This just needs to call a global update manifest job not do it it's self (will test locally)
