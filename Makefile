@@ -9,4 +9,4 @@ runcd:
 
 .PHONY: release
 release:
-	release-it
+	CI=true release-it
