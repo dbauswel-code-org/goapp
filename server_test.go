@@ -9,7 +9,7 @@ import (
 )
 
 func TestRootHandler(t *testing.T) {
-	e := NewServer()
+	e, _ := NewServer()
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
