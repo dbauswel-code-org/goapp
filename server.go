@@ -10,7 +10,7 @@ import (
 )
 
 type TestConfig struct {
-	Foo       string `env:"FOO,required"`
+	Foo       string `env:"FOO" envDefault:"NOT_SET"`
 	FooSecret string `env:"FOO_SECRET" envDefault:"NOT_SET"`
 }
 
