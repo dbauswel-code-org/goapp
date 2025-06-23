@@ -64,6 +64,7 @@ jobs:
         with:
           context: .
           push: true
+          platforms: linux/amd64, linux/arm64
           tags: |
             ${{ env.IMAGE_REGISTRY }}/${{ env.APP_NAME }}:${{ github.sha }}
             ${{ env.IMAGE_REGISTRY }}/${{ env.APP_NAME }}:latest
