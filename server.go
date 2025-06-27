@@ -22,7 +22,7 @@ func NewServer() (*echo.Echo, error) {
 	}
 	e := echo.New()
 	e.GET("/", func(c echo.Context) error {
-		msg := fmt.Sprintf("ENV VAR: %v\nSECRET VAR_Update1: %v \n", config.Foo, config.FooSecret)
+		msg := fmt.Sprintf("ENVIRO VAR: %v\nSECRET VAR_Update1: %v \n", config.Foo, config.FooSecret)
 		return c.String(http.StatusOK, msg)
 	})
 	return e, nil
